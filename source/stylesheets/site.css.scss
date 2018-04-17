@@ -3,6 +3,17 @@
   padding: 0;
 }
 
-.hoverslide img {
+.hover-slide {
+  position: relative;
+  height: 320px;
+}
+.hover-slide > * {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  position: absolute;
+  object-fit: cover;
+  background: #fff;
   display:block;
 }
