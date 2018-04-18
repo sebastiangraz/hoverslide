@@ -8,17 +8,16 @@ document.addEventListener('DOMContentLoaded', function () {
     getChildren[0].classList.add('active');
     console.log(item);
 
-    function relativeCoords ( event ) {
-      var bounds = item.getBoundingClientRect();
-      var x = event.clientX - bounds.left;
-      var y = event.clientY - bounds.top;
-      return {x: x, y: y};
+    function parentCoord ( event ) {
+      let bounds = item.getBoundingClientRect();
+      let x = event.clientX - bounds.left;
+      let y = event.clientY - bounds.top;
+      let width = bounds.width;
+      return {x: x, y: y, width: width};
     }
     item.addEventListener('mousemove', function() {
-      var rel = relativeCoords(event)
-      let x = rel.x;
-      let width = this.getBoundingClientRect().width;
-      let percentage = x / width;
+      let parent = parentCoord(event)
+      let percentage = parent.x / parent.width;
       let imageNumber = Math.floor(percentage * getChildren.length);
 
       getChildren.forEach(getChildren => {
