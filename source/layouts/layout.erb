@@ -8,9 +8,16 @@
     <!-- Use the title from a page's frontmatter if it has one -->
     <title><%= current_page.data.title || "Middleman" %></title>
     <%= stylesheet_link_tag "site" %>
-    <%= javascript_include_tag "site" %>
+    <%= javascript_include_tag "slideHover" %>
   </head>
   <body>
     <%= yield %>
   </body>
+  <script type="text/javascript">
+    var slideHover = new slideHover(document.querySelectorAll('.hover-slide'), {
+      className: 'test'
+    });
+
+    slideHover.init();
+  </script>
 </html>
