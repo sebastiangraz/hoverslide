@@ -14,10 +14,10 @@
     <%= yield %>
   </body>
   <script type="text/javascript">
-    var slideHover = new slideHover(document.querySelectorAll('.hover-slide'), {
-      className: 'test'
-    });
 
-    slideHover.init();
+
+
+    var initHoverSlide = new slideHover(".hover-slide")
+    initHoverSlide.init();
   </script>
 </html>

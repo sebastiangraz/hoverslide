@@ -1,88 +1,50 @@
-/*!
- * Vanilla Javascript Boilerplate with optional jQuery initialization
- * Author: Jan Rembold
- * Git: https://github.com/janrembold
- * License: MIT
- */
-
-(function (root, factory) {
-    var pluginName = 'slideHover';
-
-    if (typeof define === 'function' && define.amd) {
-        define([], factory(pluginName));
-    } else if (typeof exports === 'object') {
-        module.exports = factory(pluginName);
-    } else {
-        root[pluginName] = factory(pluginName);
+var slideHover = function(selector) {
+  this.node = document.querySelectorAll(selector);
+    if (this.node.length == 0) {
+      console.error('Unable to find the element');
     }
-}(this, function (pluginName) {
-    'use strict';
+  return this;
+}
 
-    var defaults = {
-        className: 'foo'
-    };
+var showSegments = function(selector, length) {
+  let repeatQuery = '<div class="hover-cover">' + '<div class="hover-segment"></div>'.repeat(length) + '</div>'
+  selector.insertAdjacentHTML( 'afterbegin', repeatQuery );
+}
 
-
-    /**
-     * Merge defaults with user options
-     * @param {Object} defaults Default settings
-     * @param {Object} options User options
-     */
-    var extend = function (target, options) {
-        var prop, extended = {};
-        for (prop in defaults) {
-            if (Object.prototype.hasOwnProperty.call(defaults, prop)) {
-                extended[prop] = defaults[prop];
-            }
-        }
-        for (prop in options) {
-            if (Object.prototype.hasOwnProperty.call(options, prop)) {
-                extended[prop] = options[prop];
-            }
-        }
-        return extended;
-    };
+// function to get the parents coordinates values
+var parentCoord = function(selector, event) {
+  let bounds = selector.getBoundingClientRect();
+  let x = event.clientX - bounds.left;
+  let y = event.clientY - bounds.top;
+  let width = bounds.width;
+  return {x: x, y: y, width: width};
+}
 
 
-    /**
-     * Some private helper function
-     */
-    var getClass = function(event) {
-        console.log(event);
-    };
+slideHover.prototype.init = function() {
+  Array.prototype.forEach.call(this.node, function (node) {
 
+    // get children of parent selector and convert to array
+    let getChildren = [].slice.call(node.children);
 
-    /**
-     * Plugin Object
-     * @param element The html element to initialize
-     * @param {Object} options User options
-     * @constructor
-     */
-    function Plugin(element, options) {
-        this.element = element;
-        this.options = extend(defaults, options);
-        console.log('Plugin inititalized');
-    }
+    // add active class to first item in array
+    getChildren[0].classList.add('active')
 
+    // generate overlay to show segments
+    showSegments(node, getChildren.length)
 
-    // Plugin prototype
-    Plugin.prototype = {
+    node.addEventListener('mousemove', function(event) {
+      let parent = parentCoord(node, event)
+      let percentage = parent.x / parent.width;
+      let imageNumber = Math.floor(percentage * getChildren.length);
+      for (const item of getChildren) {
+        item.classList.remove('active')
+      }
+      getChildren[imageNumber].classList.add('active')
+    });
 
-        init: function() {
-            let getClassSettings = this.element.innerHTML = this.options.className;
-
-            for (var i = 0; i < this.element.length; i++) {
-
-              this.element[i].classList.add(getClassSettings)
-            }
-
-        }
-
-    };
-
-    return Plugin;
-}));
-
+  });
+}
 
 
 
@@ -100,6 +62,7 @@
 //
 //     function parentCoord ( event ) {
 //       let bounds = item.getBoundingClientRect();
+//       console.log(event);
 //       let x = event.clientX - bounds.left;
 //       let y = event.clientY - bounds.top;
 //       let width = bounds.width;
@@ -108,6 +71,7 @@
 //     item.addEventListener('mousemove', function() {
 //       let parent = parentCoord(event)
 //       let percentage = parent.x / parent.width;
+//
 //       let imageNumber = Math.floor(percentage * getChildren.length);
 //
 //       getChildren.forEach(getChildren => {

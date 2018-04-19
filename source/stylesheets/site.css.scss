@@ -8,7 +8,7 @@ body {
 .hover-slide {
   margin-top: 56px;
   position: relative;
-  height: 400px;
+  height: 560px;
   overflow: hidden;
 
 }
@@ -22,9 +22,11 @@ body {
   top: 0;
   position: absolute;
   object-fit: cover;
+  pointer-events: none;
   display:block;
   background: #eee;
   &.active {
+    pointer-events: all;
     transform: scale(1);
     opacity: 1;
   }
@@ -39,6 +41,7 @@ body {
 .hover-cover {
   box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, .1) inset;
   transform: none;
+  pointer-events: none;
   background: none;
   display: flex;
   z-index: 1;
