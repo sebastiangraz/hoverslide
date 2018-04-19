@@ -6,8 +6,8 @@ var slideHover = function(selector) {
   return this;
 }
 
-var showSegments = function(selector, length) {
-  let repeatQuery = '<div class="hover-cover">' + '<div class="hover-segment"></div>'.repeat(length) + '</div>'
+var showSegments = function(selector, childLength) {
+  let repeatQuery = '<div class="hover-cover">' + '<div class="hover-segment"></div>'.repeat(childLength.length) + '</div>'
   selector.insertAdjacentHTML( 'afterbegin', repeatQuery );
 }
 
@@ -20,34 +20,34 @@ var parentCoord = function(selector, event) {
   return {x: x, y: y, width: width};
 }
 
+var setClass = function(children, index) {
+  for (const child of children) {
+    child.classList.remove('active')
+  }
+  children[index].classList.add('active')
+}
+
+var mouseX = function (selector, event, children) {
+  let parent = parentCoord(selector, event)
+  let percentage = parent.x / parent.width;
+  let imageNumber = Math.floor(percentage * children.length);
+  setClass(children, imageNumber)
+}
 
 slideHover.prototype.init = function() {
   Array.prototype.forEach.call(this.node, function (node) {
-
     // get children of parent selector and convert to array
     let getChildren = [].slice.call(node.children);
-
     // add active class to first item in array
     getChildren[0].classList.add('active')
-
     // generate overlay to show segments
-    showSegments(node, getChildren.length)
-
+    showSegments(node, getChildren)
+    // listen for mouse movement and update image
     node.addEventListener('mousemove', function(event) {
-      let parent = parentCoord(node, event)
-      let percentage = parent.x / parent.width;
-      let imageNumber = Math.floor(percentage * getChildren.length);
-      for (const item of getChildren) {
-        item.classList.remove('active')
-      }
-      getChildren[imageNumber].classList.add('active')
+      mouseX(node, event, getChildren)
     });
-
   });
 }
-
-
-
 
 
 // document.addEventListener('DOMContentLoaded', function () {
