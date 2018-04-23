@@ -9,15 +9,9 @@
     <title><%= current_page.data.title || "Middleman" %></title>
     <%= stylesheet_link_tag "site" %>
     <%= javascript_include_tag "slideHover" %>
+
   </head>
   <body>
     <%= yield %>
   </body>
-  <script type="text/javascript">
-
-
-
-    var initHoverSlide = new slideHover(".hover-slide")
-    initHoverSlide.init();
-  </script>
 </html>
