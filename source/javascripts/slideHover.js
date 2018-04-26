@@ -59,7 +59,7 @@
     selector.insertAdjacentHTML( 'afterbegin', repeatQuery );
   }
 
-  var getCoordinates = function(selector, event) {
+  var getCoordinates = function(selector, event = false) {
     let bounds = selector.getBoundingClientRect();
     let x = event.clientX - bounds.left;
     let y = event.clientY - bounds.top;
@@ -79,17 +79,21 @@
     }
   }
 
+  var setImageIndex = function (selector, index) {
+    selector[index].classList.add('active')
+  }
+
   var setStylesOnElement = function(styles, element){
     Object.assign(element.style, styles);
   }
 
   var wrapInner = function(parent, wrapper, setClass) {
-      if (typeof wrapper === "string")
-          wrapper = document.createElement(wrapper);
-      var div = parent.appendChild(wrapper);
-          div.classList.add(setClass)
-      while(parent.firstChild !== wrapper)
-          wrapper.appendChild(parent.firstChild);
+    if (typeof wrapper === "string")
+      wrapper = document.createElement(wrapper);
+    var div = parent.appendChild(wrapper);
+      div.classList.add(setClass)
+    while(parent.firstChild !== wrapper)
+      wrapper.appendChild(parent.firstChild);
   }
 
   //
@@ -101,7 +105,6 @@
     var settings;
 
     var setClass = function(children, index) {
-
       if (settings.reverse) {
         children = children.reverse();
       } else {
@@ -110,23 +113,53 @@
       for (const child of children) {
         child.classList.remove('active')
       }
-      children[index].classList.add('active')
+      setImageIndex(children, index)
+    }
+
+    var moveIndicator = function(parent, position, width) {
+      let indicator = parent.querySelector('.hover-indicator');
+      setStylesOnElement({
+        content: '',
+        position: 'absolute',
+        transform: 'translateX('+position+'px)',
+        bottom: '0',
+        left:'0',
+        transition: 'transform .4s cubic-bezier(0,.85,0,.85)',
+        width: width+'px',
+        height: '3px',
+        background: '#fff',
+        // backdropFilter: 'contrast(300%) grayscale(100%) invert(100%)',
+        opacity: '1',
+      }, indicator);
+    }
+
+    var returnCoordinates = function(selector, event) {
+      let parent = getCoordinates(selector, event)
+      return {percentage, imageNumber, childrenLength, segmentWidth, position}
+    }
+
+    var getSegmentWidth = function(parent, childrenlen) {
+      let segmentWidth = parent / childrenlen
+      return segmentWidth
     }
 
     var mouseX = function (selector, event, children) {
       let parent = getCoordinates(selector, event)
       let percentage = parent.x / parent.width;
       let imageNumber = Math.floor(percentage * children.length);
+      let segmentWidth = getSegmentWidth(parent.width, children.length)
+      let position = imageNumber * segmentWidth
       setClass(children, imageNumber)
+      moveIndicator(selector, position, segmentWidth)
     }
 
     var hoverHandler = function( event ) {
       if (!event.target.classList.contains(settings.selector)) return
-      let getChildren = [].slice.call(event.target.children[1].children);
+      let getChildren = [].slice.call(event.target.querySelector('.hover-content').children);
       mouseX(event.target, event, getChildren)
     }
 
-  	hoverSlide.init = function (options, event) {
+  	hoverSlide.init = function (options) {
   		// Selectors and variables
 
   		settings = extend( defaults, options || {} ); // Merge user options with defaults
@@ -134,24 +167,23 @@
 
       const tHandler = throttled(options.refreshRate, hoverHandler);
       document.addEventListener("mousemove", tHandler, false);
-
       let parents = document.querySelectorAll('.' + options.selector)
 
       for (let parent of parents) {
         wrapInner(parent, 'span', 'hover-content')
-        let getHoverContent = parent.querySelectorAll('.hover-content')[0];
+        let getHoverContent = parent.querySelector('.hover-content');
         let indicator = document.createElement('div')
-
         indicator.setAttribute('class','hover-indicator')
         parent.append(indicator);
-        getHoverContent.children[0].classList.add('active')
+        let parentWidth = getCoordinates(parent)
+        let segmentWidth = getSegmentWidth(parentWidth.width, getHoverContent.children.length)
+
+        setImageIndex(getHoverContent.children, 1)
+        moveIndicator(parent, 0, segmentWidth)
         if (settings.showSegments == true) {
           showSegments(parent, getHoverContent.children.length)
         }
       }
-      // Object.assign(document.querySelectorAll('.hover-indicator').style,{fontsize:"12px",left:"200px",top:"100px"})
-      // setStylesOnElement({content: '', position: 'absolute', left: '0', bottom: '0px', width: '100px', height: '10px', background: '#f00'}, document.querySelectorAll('.hover-indicator'))
-
   	};
 
 	   hoverSlide.init(options);

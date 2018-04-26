@@ -18,7 +18,7 @@ title: Welcome to Middleman
     <img src="https://source.unsplash.com/random?sig=12&nature" alt="">
   </div>
 
-  <div class="hover-slide" style="width:66%; left:100px;">
+  <div class="hover-slide">
     <img src="https://source.unsplash.com/random?sig=5&nature" alt="">
     <img src="https://source.unsplash.com/random?sig=6&nature" alt="">
     <div class="pa">
@@ -29,7 +29,7 @@ title: Welcome to Middleman
     <img src="https://source.unsplash.com/random?sig=9&nature" alt="">
   </div>
 
-  <div class="hover-slide" style="width:50%;">
+  <div class="hover-slide">
     <img src="images/photo-13.jpeg" alt="">
     <img src="images/photo-12.jpeg" alt="">
     <img src="images/photo-11.jpeg" alt="">
@@ -49,8 +49,9 @@ title: Welcome to Middleman
 <script type="text/javascript">
   var scroll = new HoverSlide({
     selector: 'hover-slide',
-    refreshRate: 0,
+    refreshRate: 66,
     showSegments: true,
+    showIndicator: false,
     reverse: false
   });
 
