@@ -15,10 +15,10 @@
 
 	var defaults = {
 		selector: 'hover-slide',
-    refreshRate: 0, //milliseconds
-    firstSlide: 0,
-    reverse: true,
-    showSegments: true
+    refreshRate: 66, //milliseconds
+    showSegments: true,
+    showIndicator: true,
+    reverse: false
 	};
 
 
@@ -79,7 +79,7 @@
     }
   }
 
-  var setImageIndex = function (selector, index) {
+  var setImageIndex = function (selector, index, maxIndex = false) {
     selector[index].classList.add('active')
   }
 
@@ -118,10 +118,13 @@
 
     var moveIndicator = function(parent, position, width) {
       let indicator = parent.querySelector('.hover-indicator');
+      let c = returnCoordinates(parent, event)
+      let setIndicatorPosition = position * c.segmentWidth
+
       setStylesOnElement({
         content: '',
         position: 'absolute',
-        transform: 'translateX('+position+'px)',
+        transform: 'translateX('+setIndicatorPosition+'px)',
         bottom: '0',
         left:'0',
         transition: 'transform .4s cubic-bezier(0,.85,0,.85)',
@@ -133,24 +136,23 @@
       }, indicator);
     }
 
-    var returnCoordinates = function(selector, event) {
+    var returnCoordinates = function(selector, event = false) {
       let parent = getCoordinates(selector, event)
-      return {percentage, imageNumber, childrenLength, segmentWidth, position}
-    }
-
-    var getSegmentWidth = function(parent, childrenlen) {
-      let segmentWidth = parent / childrenlen
-      return segmentWidth
+      let children = selector.querySelector('.hover-content').children
+      let parentWidth = parent.width;
+      let percentage = parent.x / parentWidth;
+      let imageNumber = Math.floor(percentage * children.length);
+      let segmentWidth = parentWidth / children.length
+      let position = imageNumber * segmentWidth
+      return {percentage, imageNumber, segmentWidth, position, parentWidth}
     }
 
     var mouseX = function (selector, event, children) {
-      let parent = getCoordinates(selector, event)
-      let percentage = parent.x / parent.width;
-      let imageNumber = Math.floor(percentage * children.length);
-      let segmentWidth = getSegmentWidth(parent.width, children.length)
-      let position = imageNumber * segmentWidth
-      setClass(children, imageNumber)
-      moveIndicator(selector, position, segmentWidth)
+      let c = returnCoordinates(selector, event, children)
+      setClass(children, c.imageNumber)
+      if(settings.showIndicator) {
+        moveIndicator(selector, c.imageNumber, c.segmentWidth)
+      }
     }
 
     var hoverHandler = function( event ) {
@@ -161,7 +163,6 @@
 
   	hoverSlide.init = function (options) {
   		// Selectors and variables
-
   		settings = extend( defaults, options || {} ); // Merge user options with defaults
   		// When a toggle is clicked, run the click handler
 
@@ -175,17 +176,23 @@
         let indicator = document.createElement('div')
         indicator.setAttribute('class','hover-indicator')
         parent.append(indicator);
-        let parentWidth = getCoordinates(parent)
-        let segmentWidth = getSegmentWidth(parentWidth.width, getHoverContent.children.length)
-
-        setImageIndex(getHoverContent.children, 1)
-        moveIndicator(parent, 0, segmentWidth)
+        let c = returnCoordinates(parent, false)
+        let childrenLength;
+        if (settings.reverse) {
+          childrenLength = getHoverContent.children.length - 1
+        } else {
+          childrenLength = 0
+        }
+        //set initial states and indexes
+        setImageIndex(getHoverContent.children, childrenLength, getHoverContent.children.length)
+        if (settings.showIndicator) {
+          moveIndicator(parent, childrenLength, c.segmentWidth)
+        }
         if (settings.showSegments == true) {
           showSegments(parent, getHoverContent.children.length)
         }
       }
   	};
-
 	   hoverSlide.init(options);
 	};
 
