@@ -1,18 +1,28 @@
 * {
   box-sizing: border-box;
 }
+
+@font-face {
+  font-family: "Alphorn";
+  font-weight: 500;
+  src: url("/fonts/Alphorn-Regular.woff2") format("woff2"),
+       url("/fonts/Alphorn-Regular.woff") format("woff");
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  -webkit-font-smoothing: antialiased;
+  font-family: "Alphorn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .hover-slide {
-  margin-top: 56px;
   position: relative;
   height: 560px;
   overflow: hidden;
 }
-
+.lh-custom {
+  line-height: 0.75em;
+}
 
 .hover-content > * {
   opacity: 0;
@@ -48,11 +58,11 @@ body {
   display: flex;
   z-index: 1;
 }
-.pa {
-  padding:3rem;
-}
 .row {
-  max-width: 1024px;
-  width: 88%;
+  // max-width: 1024px;
+  width: 100%;
   margin: 0 auto;
+}
+h1 {
+  font-size: 13vw;
 }
