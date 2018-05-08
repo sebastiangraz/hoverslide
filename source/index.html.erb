@@ -3,23 +3,22 @@ title: Welcome to Middleman
 ---
 
 <div class="row">
-    <div class="hover-slide w-50 fl">
+    <div class="hover-slide w-60 fl">
       <% (1..20).each do | this | %>
       <div>
-        <div class="flex items-center tc h-100 w-100" style="background:<%= randomString(['#F0F', '#ff00a8', '#FFDD05', '#FFC4B6']) %>;">
-          <h1 class="ma0 lh-custom ttu" style="color:<%= randomString(['#F00', '#0f0261', '#00e8ff', '#FFA900', '#FFC4B6']) %>;">MOUSE SLIDE PLUGIN</h1>
+        <div class="flex items-center tc h-100 w-100" style="background:<%= randomString(['#F0F', '#ff00a8', '#FFDD05']) %>; color:<%= randomString(['#F00', '#0f0261', '#00e8ff', '#FFA900', '#FFC4B6', '#332ACD', '#dcf996']) %>;">
+          <div class="bottom-1 relative">
+            <span class="f6 db ma0 top-1 left-1">V0.1</span>
+            <h1 class="ma0 lh-custom ttu">MOUSE SLIDE PLUGIN</h1>
+          </div>
         </div>
       </div>
       <% end %>
     </div>
-    <div class="hover-slide w-50 fl">
-      <img src="https://source.unsplash.com/random?sig=1&abstract" alt="">
-      <img src="https://source.unsplash.com/random?sig=2&abstract" alt="">
-      <img src="https://source.unsplash.com/random?sig=3&abstract" alt="">
-      <img src="https://source.unsplash.com/random?sig=4&abstract" alt="">
-      <img src="https://source.unsplash.com/random?sig=10&abstract" alt="">
-      <img src="https://source.unsplash.com/random?sig=11&abstract" alt="">
-      <img src="https://source.unsplash.com/random?sig=12&abstract" alt="">
+    <div class="hover-slide w-40 fl">
+      <% (1..10).each do | this | %>
+        <img src="https://source.unsplash.com/random?sig=<%= rand(1..50) %>&abstract" alt="">
+      <% end %>
     </div>
 
     <div class="hover-slide w-50 fl">
@@ -62,7 +61,7 @@ title: Welcome to Middleman
   var scroll = new HoverSlide({
     selector: 'hover-slide',
     refreshRate: 66, //milliseconds
-    showSegments: true,
+    showSegments: false,
     showIndicator: true,
     reverse: false
   });
